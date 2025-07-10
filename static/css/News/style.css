@@ -1,0 +1,210 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    color: #9b5de5;
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links .nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.nav-links .nav-link:hover {
+    color: #9b5de5;
+}
+
+/* Button Styles */
+.btn-outline-danger {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-outline-info {
+    color: #17a2b8;
+    border: 1px solid #17a2b8;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-outline-info:hover {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.btn-outline-success {
+    color: #28a745;
+    border: 1px solid #28a745;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.btn-signup {
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.btn-signup:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Slider Styling */
+.slider {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.slide img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.caption {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    font-size: 1.2rem;
+}
+
+
+/* Categories Section */
+/* Container for the categories section */
+.categories {
+    text-align: center;
+    padding: 40px;
+    background-color: #f4f4f4;
+}
+
+.categories h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Style for category buttons (anchors) */
+.category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+/* Individual category link styles */
+.category-link {
+    font-size: 1.2rem;
+    color: #333;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    transition: all 0.3s ease;  /* Smooth transition for hover effects */
+}
+
+/* Hover effects for category links */
+.category-link:hover {
+    color: #fff;
+    background-color: #007bff; /* Change to a blue background on hover */
+    transform: scale(1.05);  /* Slightly scale up on hover */
+    text-decoration: underline; /* Underline text on hover */
+}
+
+/* Active link style (when clicked) */
+.category-link:active {
+    transform: scale(0.98); /* Slightly scale down when clicked */
+    background-color: #0056b3; /* Darker blue for active state */
+}
+
+/* Animation for category links */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply the animation to each category link with a delay */
+.category-link {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.category-link:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.category-link:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.category-link:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.category-link:nth-child(4) {
+    animation-delay: 0.4s;
+}
+.category-link:nth-child(5) {
+    animation-delay: 0.5s;
+}
+.category-link:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
