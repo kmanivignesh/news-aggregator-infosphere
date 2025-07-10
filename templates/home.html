@@ -1,0 +1,416 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Aggregator</title>
+    <link rel="stylesheet" href="{% static 'css/News/style.css' %}">
+    <style>
+        /* Container for the categories section */
+
+/* Container for headlines */
+/* Container for headlines */
+/* Styling for the row containing headline cards */
+/* Headline section container */
+.headline-row {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping if the screen is too small */
+    justify-content: space-between; /* Evenly space cards */
+    gap: 15px; /* Add spacing between cards */
+    padding: 20px;
+}
+
+/* Individual headline card */
+.headline-card {
+    flex: 1 1 calc(25% - 15px); /* Each card takes 25% of the row, minus gap */
+    max-width: calc(25% - 15px); /* Same as flex basis for proper alignment */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    overflow: hidden;
+    text-align: center; /* Center-align content inside cards */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Fix the size of the images inside the cards */
+.headline-card img {
+    width: 100%; /* Make the image fit the card width */
+    height: 150px; /* Fixed height for uniformity */
+    object-fit: cover; /* Ensures images maintain aspect ratio */
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+/* Headline title */
+.headline-card h3 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+/* Description */
+.headline-card .description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Hover effect for cards */
+.headline-card:hover {
+    transform: translateY(-5px); /* Lift slightly on hover */
+}
+
+/* Buttons inside the cards */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Stop button styles */
+.btn-stop {
+    display: none;
+    background-color: #f44336;
+    color: white;
+}
+/* Read More link styles */
+.read-more {
+    display: inline-block; /* Ensures proper spacing and alignment */
+    margin-top: 10px;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #ffffff; /* Text color */
+    background-color: #007BFF; /* Button background color */
+    border-radius: 5px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth animation on hover */
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); /* Subtle shadow */
+}
+
+/* Hover effect for Read More */
+.read-more:hover {
+    background-color: #0056b3; /* Darker blue */
+    box-shadow: 0 6px 10px rgba(0, 86, 179, 0.5); /* Deeper shadow */
+    transform: translateY(-2px); /* Slight lift effect */
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+/* Active effect for Read More */
+.read-more:active {
+    background-color: #003d80; /* Even darker blue for click */
+    transform: translateY(1px); /* Button presses down */
+    box-shadow: 0 3px 5px rgba(0, 61, 128, 0.4); /* Adjust shadow on click */
+}
+
+
+/* Basic style for the Generate PDF button */
+.generate-pdf-btn {
+    display: inline-block; /* Align with text or other elements */
+    margin-top: 10px; /* Space above the button */
+    padding: 8px 15px; /* Padding to make the button clickable */
+    font-size: 0.9rem; /* Slightly smaller text */
+    font-weight: bold; /* Bold text */
+    text-decoration: none; /* Remove underline */
+    color: #ffffff; /* White text */
+    background-color: #007bff; /* Blue background for generate PDF */
+    border-radius: 5px; /* Rounded corners */
+    transition: all 0.3s ease; /* Smooth transition for hover and active states */
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); /* Subtle shadow for depth */
+}
+
+/* Hover effect for Generate PDF button */
+.generate-pdf-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 6px 10px rgba(0, 86, 179, 0.5); /* Deeper shadow on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    text-decoration: none; /* Remove underline on hover */
+}
+
+/* Active effect for Generate PDF button */
+.generate-pdf-btn:active {
+    background-color: #003d80; /* Even darker blue when clicked */
+    transform: translateY(1px); /* Button presses down */
+    box-shadow: 0 3px 5px rgba(0, 61, 128, 0.4); /* Adjust shadow on click */
+}
+
+
+
+.categories {
+    text-align: center;
+    padding: 40px;
+    background-color: #f4f4f4;
+}
+
+.categories h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Style for category buttons (anchors) */
+.category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+}
+
+/* Individual category link styles */
+.category-link {
+    font-size: 1.2rem;
+    color: #333;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    transition: all 0.3s ease;  /* Smooth transition for hover effects */
+}
+
+/* Hover effects for category links */
+.category-link:hover {
+    color: #fff;
+    background-color: #007bff; /* Change to a blue background on hover */
+    transform: scale(1.05);  /* Slightly scale up on hover */
+    text-decoration: underline; /* Underline text on hover */
+}
+
+/* Active link style (when clicked) */
+.category-link:active {
+    transform: scale(0.98); /* Slightly scale down when clicked */
+    background-color: #0056b3; /* Darker blue for active state */
+}
+
+/* Animation for category links */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .headline-card {
+        flex: 1 1 calc(50% - 20px); /* Two cards per row */
+    }
+}
+
+@media (max-width: 480px) {
+    .headline-card {
+        flex: 1 1 calc(100% - 20px); /* One card per row */
+    }
+}
+
+
+/* Apply the animation to each category link with a delay */
+.category-link {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.category-link:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.category-link:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.category-link:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.category-link:nth-child(4) {
+    animation-delay: 0.4s;
+}
+.category-link:nth-child(5) {
+    animation-delay: 0.5s;
+}
+.category-link:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+
+
+
+
+    </style>
+   
+</head>
+<body>
+    <!-- Navbar -->
+    <!-- Navbar -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>InfoSearch</title>
+        <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <a href="#" class="logo">InfoSearch</a>
+                <ul class="nav-links">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">categories</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                    <li><a class="nav-link" href="{% url 'user_bookmarks' %}">Your Bookmarks</a></li>
+                {% endif %}
+        
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <span class="nav-link">Hi {{ request.user }}!</span>
+                    </li>
+                    <li class="nav-item">
+                        <!-- Add UserProfile Link -->
+                        <a class="nav-link" href="{% url 'userprofile:userprofile' request.user.username %}">My Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" role="button" href="accounts/handlelogout">Log Out</a>
+                    </li>
+        
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-success" role="button" href="accounts/login">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-signup" role="button" href="accounts/signup">Sign Up</a>
+                    </li>
+                    {% endif %}
+
+                    
+                    
+                </ul>
+            </div>
+        </nav>
+        
+    </body>
+    </html>
+    
+    
+
+    <!-- Banner Slider -->
+    <div class="slider">
+        {% for slide in slides %}
+        <div class="slide">
+            <img src="{% static slide.image %}" alt="News Banner {{ forloop.counter }}">
+            <div class="caption">{{ slide.caption }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Headline Section -->
+    <section class="headlines">
+        <h2>Top Headlines</h2>
+        <div class="headline-row">
+            {% for headline in top_headlines %}
+            <div class="headline-card">
+                <img src="{{ headline.urlToImage }}" alt="Headline {{ forloop.counter }}">
+                <h3>{{ headline.title }}</h3>
+                <p class="description">{{ headline.description }}</p>
+    
+                <button class="btn-speak-title" onclick="speakText('{{ headline.title }}', this)">Speak Title</button>
+                <button class="btn-speak-description" onclick="speakText('{{ headline.description }}', this)">Speak Description</button>
+                <button class="btn-stop" onclick="stopSpeech(this)">Stop</button>
+    <br>
+      <!-- Generate PDF Button -->
+      <a href="{% url 'generate_pdf' %}?title={{ headline.title|urlencode }}&description={{ headline.description|urlencode }}&image={{ headline.urlToImage|urlencode }}&url={{ headline.url|urlencode }}" 
+      class="generate-pdf-btn" target="_blank">Generate PDF</a>
+<br>
+                <a href="{{ headline.url }}" class="read-more">Read more</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories" id="categories">
+        <h2>Categories</h2>
+        <div class="category-buttons">
+            {% for category in categories %}
+                <a href="{% url 'category_news' category.slug %}" class="category-link">{{ category.name }}</a>
+            {% endfor %}
+        </div>
+    </section>
+    
+
+    
+
+    <!-- <script src="{% static 'js/News/scripts.js' %}"></script> -->
+     <script>
+    var currentSpeech = null;  // Store the current speech instance
+
+    function speakText(text, button) {
+        // If speech is already ongoing, cancel it
+        if (currentSpeech && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();  // Stop ongoing speech
+        }
+    
+        // Create a new SpeechSynthesisUtterance object
+        currentSpeech = new SpeechSynthesisUtterance(text);
+        currentSpeech.lang = "en-US";  // Specify the language
+    
+        // Speak the text
+        window.speechSynthesis.speak(currentSpeech);
+    
+        // Disable the speak button and show the stop button while speaking
+        button.disabled = true;
+        var stopButton = button.closest('.headline-card').querySelector('.btn-stop');
+        
+        // Debugging output: Log the stop button's visibility
+        console.log("Stop button visibility (before):", stopButton.style.display);
+    
+        stopButton.style.display = 'inline-block';  // Make the stop button visible
+    
+        // Debugging output: Log the stop button's visibility
+        console.log("Stop button visibility (after):", stopButton.style.display);
+    }
+    
+    function stopSpeech(button) {
+        // Cancel the speech and reset the UI
+        window.speechSynthesis.cancel();
+    
+        // Enable the speak buttons and hide the stop button
+        var card = button.closest('.headline-card');
+        var speakButtons = card.querySelectorAll('.btn-speak-title, .btn-speak-description');
+        speakButtons.forEach(function(btn) {
+            btn.disabled = false;
+        });
+    
+        // Hide the stop button and log visibility status
+        button.style.display = 'none';
+        console.log("Stop button visibility (hidden):", button.style.display);
+    
+        // You can also log all button states for debugging:
+        var allButtons = card.querySelectorAll('.btn-speak-title, .btn-speak-description, .btn-stop');
+        allButtons.forEach(function(btn) {
+            console.log(`${btn.className}: ${btn.style.display}`);
+        });
+    }
+    
+    
+</script>   
+    
+</body>
+</html>

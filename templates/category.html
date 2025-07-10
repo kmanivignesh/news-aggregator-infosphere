@@ -1,0 +1,207 @@
+{% load static %}
+
+<!-- category.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category|title }} News - News Aggregator</title>
+    <link rel="stylesheet" href="{% static 'css/category.css' %}">
+    <style>
+/* Styling for buttons */
+button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 14px;
+}
+
+/* Hover effect for buttons */
+button:hover {
+    background-color: #45a049; /* Darker green */
+    transform: scale(1.05); /* Slight grow effect */
+}
+
+/* Disabled state for buttons */
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Stop button styling */
+.btn-stop {
+    display: none; /* Initially hidden */
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.headline-card {
+    margin-bottom: 20px;
+}
+/* Transition effects for smooth appearance */
+.btn-stop, .btn-speak-title, .btn-speak-description {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Show the Speak buttons and Stop button when hovered */
+.headline-card:hover .btn-speak-title,
+.headline-card:hover .btn-speak-description {
+    opacity: 1;  /* Fade in when hovering over the card */
+}
+
+.btn-qr {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn-qr:hover {
+    background-color: #0056b3;
+}
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">InfoSphere</a>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'category_news' category='general' %}">Categories</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url 'user_bookmarks' %}">Your Bookmarks</a></li>
+        {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Category Section -->
+    <section class="category-news">
+        <h2>{{ category|title }} News</h2>
+        <div class="headline-row">
+            {% for article in articles %}
+            <div class="headline-card">
+                <img src="{{ article.urlToImage }}" alt="{{ article.title }}">
+                <h3>{{ article.title }}</h3>
+                <p>{{ article.description|default:"No description available" }}</p>
+    
+                <!-- Speak Title and Speak Description Buttons -->
+                <button class="btn-speak-title" onclick="speakText('{{ article.title }}', this)">Speak Title</button>
+                <button class="btn-speak-description" onclick="speakText('{{ article.description }}', this)">Speak Description</button>
+    
+                <!-- Stop Button (Initially hidden) -->
+                <button class="btn-stop" onclick="stopSpeech(this)" style="display:none;">Stop</button>
+    
+                <!-- Bookmark Button -->
+                <button 
+                    class="btn-bookmark" 
+                    onclick="addBookmark('{{ article.title }}', '{{ article.description }}', '{{ article.url }}', '{{ article.urlToImage }}')">
+                    Bookmark
+                </button>
+    
+                <!-- Generate QR Code Button -->
+                <a href="{% url 'generate_qr' %}?url={{ article.url }}" class="btn-qr" target="_blank">Generate QR Code</a>
+    
+                <a href="{{ article.url }}" target="_blank" class="read-more">Read More</a>
+            </div>
+            {% empty %}
+            <p>No news available in this category at the moment.</p>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <script>
+        let speechSynthesisInstance = null; // Store the current speech instance
+
+        // Function to speak the text
+        function speakText(text, buttonElement) {
+            // If speech is already playing, stop it first
+            if (speechSynthesisInstance && speechSynthesisInstance.speaking) {
+                stopSpeech(buttonElement);
+            }
+
+            // Create a new SpeechSynthesisUtterance
+            speechSynthesisInstance = new SpeechSynthesisUtterance(text);
+
+            // Log the start of speech
+            console.log("Speech started...");
+
+            // When speech starts, show the Stop button
+            speechSynthesisInstance.onstart = function() {
+                console.log("Speech started, showing stop button...");
+                buttonElement.closest('.headline-card').querySelector('.btn-stop').style.display = 'inline-block';
+            };
+
+            // When speech ends, hide the Stop button
+            speechSynthesisInstance.onend = function() {
+                console.log("Speech ended, hiding stop button...");
+                buttonElement.closest('.headline-card').querySelector('.btn-stop').style.display = 'none';
+            };
+
+            // Speak the text
+            window.speechSynthesis.speak(speechSynthesisInstance);
+        }
+
+        // Function to stop the speech
+        function stopSpeech(buttonElement) {
+            console.log("Stopping speech...");
+            if (speechSynthesisInstance && speechSynthesisInstance.speaking) {
+                window.speechSynthesis.cancel(); // Stop speech
+                // Hide the Stop button after stopping speech
+                buttonElement.style.display = 'none';
+            }
+        }
+
+        // Function to send a POST request to save a bookmark
+        function addBookmark(title, description, url, image_url) {
+            const data = {
+                title: title,
+                description: description,
+                url: url,
+                image_url: image_url,
+            };
+        
+            fetch("{% url 'add_bookmark' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    // Log more detailed error information from response
+                    return response.json().then((errorData) => {
+                        throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorData.error || 'Unknown error'}`);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                alert(data.message || 'Bookmark added successfully');
+            })
+            .catch((error) => {
+                console.error("Error:", error); // Log detailed error information
+                alert(`Failed to add bookmark: ${error.message}`);
+            });
+        }
+        
+
+        
+    </script>
+
+</body>
+</html>
