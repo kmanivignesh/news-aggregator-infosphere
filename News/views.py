@@ -35,7 +35,7 @@ def home(request):
 
 
 def category_news(request, category):
-    api_key = "b03cd05b424946719bdd9a8b1a92eb8c"
+    api_key = ""  #Sign in to NewsAPI and Enter the API key
     url = f"https://newsapi.org/v2/top-headlines?country=us&category={category}&apiKey={api_key}"
     response = requests.get(url).json()
     
