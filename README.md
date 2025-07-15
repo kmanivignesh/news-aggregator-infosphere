@@ -15,7 +15,6 @@
 - [🔑 NewsAPI Setup](#-newsapi-setup)
 - [🔍 Research Gaps Addressed](#-research-gaps-addressed)
 - [📚 References](#-references)
-- [👨‍💻 Contributors](#-contributors)
 
 ---
 
